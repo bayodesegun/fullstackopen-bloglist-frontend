@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+
+import BlogList from './components/BlogList'
+import Login from './components/Login'
+import CreateBlog from './components/CreateBlog'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -8,19 +12,26 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
-  useEffect(() => {
+  const getUserFromLocalStorage = async () => {
     const userJSON = localStorage.getItem('user')
     if (userJSON) {
       const user = JSON.parse(userJSON)
       setUser(user)
     }
-  }, [])
+  }
+
+  const getAllBlogs = async () => {
+    const blogs = await blogService.getAll()
+    setBlogs(blogs)
+  }
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then(blogs => setBlogs(blogs))
+    getUserFromLocalStorage()
+    getAllBlogs()
   }, [])
 
   const handleLogin = async (event) => {
@@ -41,42 +52,45 @@ const App = () => {
     setUser(null)
   }
 
+  const createBlog = async (event) => {
+    event.preventDefault()
+    const newBlog = {
+      title,
+      author,
+      url
+    }
+    const createdBlog = await blogService.create(newBlog, user)
+    setBlogs(blogs.concat(createdBlog))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
   return user !== null ?
     (<>
-      <h2>blogs</h2>
-      <h3>
-        {user.name} is logged in. &nbsp;
-        <button onClick={handleLogout}>logout</button>
-      </h3>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <BlogList
+        blogs={blogs}
+        user={user}
+        handleLogout={handleLogout}
+      />
+      <CreateBlog
+        title={title}
+        author={author}
+        url={url}
+        setTitle={setTitle}
+        setAuthor={setAuthor}
+        setUrl={setUrl}
+        createBlog={createBlog}
+      />
     </>)
     :
-    (<>
-      <h2>log in to the application</h2>
-      <form onSubmit={handleLogin}>
-        <div>
-          username &nbsp;
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password &nbsp;
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button type="submit">login</button>
-      </form>
-    </>)
+    <Login
+      username={username}
+      password={password}
+      setUsername={setUsername}
+      setPassword={setPassword}
+      handleLogin={handleLogin}
+    />
 }
 
 export default App
