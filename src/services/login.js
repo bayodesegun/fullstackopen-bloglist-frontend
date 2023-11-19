@@ -6,4 +6,11 @@ const login = async (params) => {
   return response.data
 }
 
-export default { login }
+const logout = async () => {
+  localStorage.setItem('user', null)
+}
+
+export default {
+  login,
+  logout
+}
