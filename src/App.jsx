@@ -15,9 +15,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [messages, setMessages] = useState([])
 
 
@@ -76,11 +73,9 @@ const App = () => {
     showNotification('You are logged out', 'success')
   }
 
-  const createBlog = async (event) => {
-    event.preventDefault()
+  const createBlog = async (data) => {
     try {
-      const newBlog = {title, author, url}
-      const createdBlog = await blogService.create(newBlog, user)
+      const createdBlog = await blogService.create(data, user)
       setBlogs(blogs.concat(createdBlog))
       setTitle('')
       setAuthor('')
@@ -107,14 +102,8 @@ const App = () => {
           user={user}
           handleLogout={handleLogout}
         />
-        <Togglable buttonLabel="new note" ref={createBlogRef}>
+        <Togglable buttonLabel="new blog" ref={createBlogRef}>
           <CreateBlog
-            title={title}
-            author={author}
-            url={url}
-            setTitle={setTitle}
-            setAuthor={setAuthor}
-            setUrl={setUrl}
             createBlog={createBlog}
           />
         </Togglable>
