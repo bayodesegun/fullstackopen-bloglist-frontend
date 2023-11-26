@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 
 import BlogList from './components/BlogList'
 import Login from './components/Login'
 import CreateBlog from './components/CreateBlog'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -19,6 +20,8 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [messages, setMessages] = useState([])
 
+
+  const createBlogRef = useRef(null)
 
   const showNotification = (message, messageType) => {
     let newMessage = { message, messageType, id: uuidv4() }
@@ -86,6 +89,7 @@ const App = () => {
     } catch (exception) {
       showNotification(`Error creating blog: ${exception.response.data.error}`, 'error')
     }
+    createBlogRef.current.toggleVisibility()
   }
 
   return <>
@@ -103,15 +107,17 @@ const App = () => {
           user={user}
           handleLogout={handleLogout}
         />
-        <CreateBlog
-          title={title}
-          author={author}
-          url={url}
-          setTitle={setTitle}
-          setAuthor={setAuthor}
-          setUrl={setUrl}
-          createBlog={createBlog}
-        />
+        <Togglable buttonLabel="new note" ref={createBlogRef}>
+          <CreateBlog
+            title={title}
+            author={author}
+            url={url}
+            setTitle={setTitle}
+            setAuthor={setAuthor}
+            setUrl={setUrl}
+            createBlog={createBlog}
+          />
+        </Togglable>
       </>
       :
       <Login
