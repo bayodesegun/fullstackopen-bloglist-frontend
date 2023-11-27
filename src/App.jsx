@@ -76,12 +76,10 @@ const App = () => {
   const createBlog = async (data) => {
     try {
       const createdBlog = await blogService.create(data, user)
-      setBlogs(blogs.concat(createdBlog))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      showNotification(`A new blog ${createdBlog.title} by ${newBlog.author} added`, 'success')
+      setBlogs(blogs.concat({...createdBlog, user}))
+      showNotification(`A new blog ${createdBlog.title} by ${createdBlog.author} added`, 'success')
     } catch (exception) {
+      console.log(exception)
       showNotification(`Error creating blog: ${exception.response.data.error}`, 'error')
     }
     createBlogRef.current.toggleVisibility()
