@@ -1,6 +1,6 @@
 import Blog from './Blog'
 
-const BlogList = ({ blogs, user, handleLogout }) => (
+const BlogList = ({ blogs, user, handleLogout, updateBlog }) => (
   <div>
     <h2>blogs</h2>
     <h3>
@@ -8,7 +8,11 @@ const BlogList = ({ blogs, user, handleLogout }) => (
       <button onClick={handleLogout}>logout</button>
     </h3>
     {blogs.map(blog =>
-      <Blog key={blog.id} blog={blog} />
+      <Blog
+        key={blog.id}
+        blog={blog}
+        updateBlog={updateBlog}
+      />
     )}
   </div>
 )

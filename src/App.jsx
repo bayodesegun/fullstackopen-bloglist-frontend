@@ -85,6 +85,18 @@ const App = () => {
     createBlogRef.current.toggleVisibility()
   }
 
+  const updateBlog = async (blog) => {
+    try {
+      const updatedBlog = await blogService.update(blog, user)
+      const newBlogs = blogs.map(b => b.id === blog.id? updatedBlog : b)
+      setBlogs(newBlogs)
+      showNotification(`Blog ${blog.title} was liked by ${user.name}`, 'success')
+    } catch (exception) {
+      console.log(exception)
+      showNotification(`Error liking blog: ${exception.response.data.error}`, 'error')
+    }
+  }
+
   return <>
     {messages.map(m =>
       <Notification
@@ -99,6 +111,7 @@ const App = () => {
           blogs={blogs}
           user={user}
           handleLogout={handleLogout}
+          updateBlog={updateBlog}
         />
         <Togglable buttonLabel="new blog" ref={createBlogRef}>
           <CreateBlog
