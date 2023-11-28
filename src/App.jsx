@@ -33,11 +33,16 @@ const App = () => {
     }
   }
 
+  const sortBlogsAndUpdate = (_blogs) => {
+    _blogs.sort((a, b) => b.likes - a.likes)
+    setBlogs(_blogs)
+  }
+
   const getAllBlogs = async () => {
     if (user === null) return
     try {
       const blogs = await blogService.getAll()
-      setBlogs(blogs)
+      sortBlogsAndUpdate(blogs)
       showNotification('Blogs fetched successfully', 'success')
     } catch (exception) {
       showNotification(`Could not fetch blogs: ${exception}`, 'error')
@@ -76,7 +81,7 @@ const App = () => {
   const createBlog = async (data) => {
     try {
       const createdBlog = await blogService.create(data, user)
-      setBlogs(blogs.concat({...createdBlog, user}))
+      sortBlogsAndUpdate(blogs.concat({...createdBlog, user}))
       showNotification(`A new blog ${createdBlog.title} by ${createdBlog.author} added`, 'success')
     } catch (exception) {
       console.log(exception)
@@ -89,10 +94,9 @@ const App = () => {
     try {
       const updatedBlog = await blogService.update(blog, user)
       const newBlogs = blogs.map(b => b.id === blog.id? updatedBlog : b)
-      setBlogs(newBlogs)
+      sortBlogsAndUpdate(newBlogs)
       showNotification(`Blog ${blog.title} was liked by ${user.name}`, 'success')
     } catch (exception) {
-      console.log(exception)
       showNotification(`Error liking blog: ${exception.response.data.error}`, 'error')
     }
   }
