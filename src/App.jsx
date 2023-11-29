@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from 'react'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 import BlogList from './components/BlogList'
 import Login from './components/Login'
@@ -61,7 +62,7 @@ const App = () => {
     event.preventDefault()
     console.log('logging in with', username)
     try {
-      const user = await loginService.login({username, password})
+      const user = await loginService.login({ username, password })
       setUser(user)
       localStorage.setItem('user', JSON.stringify(user))
       setUsername('')
@@ -82,7 +83,7 @@ const App = () => {
   const createBlog = async (data) => {
     try {
       const createdBlog = await blogService.create(data, user)
-      sortBlogsAndUpdate(blogs.concat({...createdBlog, user}))
+      sortBlogsAndUpdate(blogs.concat({ ...createdBlog, user }))
       showNotification(`A new blog ${createdBlog.title} by ${createdBlog.author} added`, 'success')
     } catch (exception) {
       console.log(exception)
