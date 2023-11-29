@@ -1,6 +1,6 @@
 import Blog from './Blog'
 
-const BlogList = ({ blogs, user, handleLogout, updateBlog }) => (
+const BlogList = ({ blogs, user, handleLogout, updateBlog, deleteBlog }) => (
   <div>
     <h2>blogs</h2>
     <h3>
@@ -11,7 +11,9 @@ const BlogList = ({ blogs, user, handleLogout, updateBlog }) => (
       <Blog
         key={blog.id}
         blog={blog}
+        loggedInUser={user}
         updateBlog={updateBlog}
+        deleteBlog={deleteBlog}
       />
     )}
   </div>

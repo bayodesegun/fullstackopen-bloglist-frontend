@@ -26,4 +26,10 @@ const update = async (blog, user) => {
   return response.data
 }
 
-export default { getAll, create, update }
+const remove = async (blog, user) => {
+  const headers = getHeaders(user)
+  const response = await axios.delete(`${baseUrl}/${blog.id}`, headers)
+  return response.data
+}
+
+export default { getAll, create, update, remove }

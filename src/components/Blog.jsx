@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, loggedInUser, updateBlog, deleteBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const likeBlog = async (blog) => {
@@ -31,6 +31,9 @@ const Blog = ({ blog, updateBlog }) => {
           <div>{blog.url}</div>
           <div>{blog.likes} likes <button onClick={() => likeBlog(blog)} >like</button> </div>
           <div>{blog.user ? blog.user.name : ''}</div>
+          { blog.user && blog.user.username === loggedInUser.username ?
+            (<button onClick={() => deleteBlog(blog)}>remove</button>) : ''
+          }
         </div>
         )
       }

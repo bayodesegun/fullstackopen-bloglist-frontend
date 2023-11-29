@@ -75,7 +75,8 @@ const App = () => {
   const handleLogout = () => {
     loginService.logout()
     setUser(null)
-    showNotification('You are logged out', 'success')
+    showNotification('You logged out', 'success')
+    setTimeout(() => setMessages([]), 3000)
   }
 
   const createBlog = async (data) => {
@@ -101,14 +102,21 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blog) => {
+    if (!confirm(`Really delete blog "${blog.title}" by "${blog.author}"?`)) {
+      return
+    }
+    try {
+      const deleteBlog = await blogService.remove(blog, user)
+      const newBlogs = blogs.filter(b => b.id!== blog.id)
+      sortBlogsAndUpdate(newBlogs)
+      showNotification(`Blog ${blog.title} was deleted by ${user.name}`, 'success')
+    } catch (exception) {
+      showNotification(`Error deleting blog: ${exception.response.data.error}`, 'error')
+    }
+  }
+
   return <>
-    {messages.map(m =>
-      <Notification
-        key={m.id}
-        message={m.message}
-        messageType={m.messageType}
-      />
-    )}
     {user !== null ?
       <>
         <BlogList
@@ -116,6 +124,7 @@ const App = () => {
           user={user}
           handleLogout={handleLogout}
           updateBlog={updateBlog}
+          deleteBlog={deleteBlog}
         />
         <Togglable buttonLabel="new blog" ref={createBlogRef}>
           <CreateBlog
@@ -132,6 +141,13 @@ const App = () => {
         handleLogin={handleLogin}
       />
     }
+    <br />
+    {messages.filter(m => !m.expired).map(m =>
+      <Notification
+        key={m.id}
+        message={m}
+      />
+    )}
   </>
 }
 
