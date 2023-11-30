@@ -22,12 +22,12 @@ const Blog = ({ blog, loggedInUser, updateBlog, deleteBlog }) => {
   return (
     <div style={blogStyle}>
       { !showDetails ?
-        (<div>
+        (<div className='blog-overview'>
           {blog.title} {blog.author} <button onClick={() => setShowDetails(true)}>view</button>
         </div>
         )
         :
-        (<div>
+        (<div className='blog-details'>
           <div>{blog.title} {blog.author} <button onClick={() => setShowDetails(false)}>hide</button></div>
           <div>{blog.url}</div>
           <div>{blog.likes} likes <button onClick={() => likeBlog(blog)} >like</button> </div>
