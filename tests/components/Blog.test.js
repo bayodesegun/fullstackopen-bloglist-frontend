@@ -16,10 +16,10 @@ describe('<Blog /> component tests', () => {
       name: 'name'
     }
   }
+  const updateBlog = jest.fn()
+  const deleteBlog = jest.fn()
 
   beforeEach(() => {
-    const updateBlog = jest.fn()
-    const deleteBlog = jest.fn()
     container = render(
       <Blog blog={blog} loggedInUser={blog.user} updateBlog={updateBlog} deleteBlog={deleteBlog} />
     ).container
@@ -54,4 +54,18 @@ describe('<Blog /> component tests', () => {
     expect(overview.textContent).toBe('title author view')
     expect(details).toBeNull()
   })
+
+  test('clicking the like button calls the updateBlog event handler', async () => {
+    const user = userEvent.setup()
+    const viewBtn = screen.getByText('view')
+    await user.click(viewBtn)
+
+    const likeBtn = screen.getByText('like')
+    await user.click(likeBtn)
+    await user.click(likeBtn)
+
+    expect(updateBlog).toHaveBeenCalledTimes(2)
+  })
+
+
 })
