@@ -33,4 +33,25 @@ describe('<Blog /> component tests', () => {
     const details = container.querySelector('.blog-details')
     expect(details).toBe(null)
   })
+
+  test('after clicking the "view" button, blog details are displayed', async () => {
+    const user = userEvent.setup()
+    const viewBtn = screen.getByText('view')
+    await user.click(viewBtn)
+
+    let overview = container.querySelector('.blog-overview')
+    expect(overview).toBeNull()
+
+    let details = container.querySelector('.blog-details')
+    expect(details).toBeDefined()
+    expect(details.textContent).toBe('title author hideurl0 likes like nameremove')
+
+    const hideBtn = screen.getByText('hide')
+    await user.click(hideBtn)
+    overview = container.querySelector('.blog-overview')
+    details = container.querySelector('.blog-details')
+    expect(overview).toBeDefined()
+    expect(overview.textContent).toBe('title author view')
+    expect(details).toBeNull()
+  })
 })
