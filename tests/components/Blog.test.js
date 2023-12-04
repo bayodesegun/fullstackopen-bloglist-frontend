@@ -66,6 +66,4 @@ describe('<Blog /> component tests', () => {
 
     expect(updateBlog).toHaveBeenCalledTimes(2)
   })
-
-
 })
