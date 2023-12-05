@@ -72,6 +72,13 @@ describe('Blog app', function() {
   describe('When logged in', function() {
     beforeEach(function() {
       cy.login({ username: 'testuser', password: 'test123' })
+
+      // Create a blog
+      cy.createBlog({
+        title: 'Test Blog',
+        author: 'Test Author',
+        url: 'http://test.com'
+      })
     })
 
     it('A blog can be created', function() {
@@ -91,18 +98,10 @@ describe('Blog app', function() {
       cy.contains('Test Blog')
       cy.get('.blog-list')
         .children('.blog')
-        .should('have.length', 1)
+        .should('have.length', 2)
     })
 
     it('Can view and hide blog details', function() {
-      // Create a blog
-      cy.createBlog({
-        title: 'Test Blog',
-        author: 'Test Author',
-        url: 'http://test.com',
-        user: JSON.parse(localStorage.getItem('user')).id
-      })
-
       // Get the first blog in the list
       cy.get('.blog-list')
         .children('.blog')
@@ -165,14 +164,6 @@ describe('Blog app', function() {
     })
 
     it('A blog can be liked', function() {
-      // Create a blog
-      cy.createBlog({
-        title: 'Test Blog',
-        author: 'Test Author',
-        url: 'http://test.com',
-        user: JSON.parse(localStorage.getItem('user')).id
-      })
-
       // Get the first blog in the list
       // and like it
       cy.get('.blog-list')
@@ -199,6 +190,36 @@ describe('Blog app', function() {
         .contains('Blog Test Blog was liked by Test User')
         .should('have.css', 'color', 'rgb(0, 128, 0)')
         .and('have.css', 'border-style', 'solid')
+    })
+
+    it('A user can delete own blog', function() {
+      // before
+      cy.get('.blog-list')
+        .children('.blog').as('blogs')
+        .should('have.length', 1)
+
+      // Get the first blog in the list
+      // and delete it
+      cy.get('@blogs')
+        .first()
+        .get('.blog-overview')
+        .get('button')
+        .contains('view')
+        .click()
+
+      cy.get('.blog-details')
+        .get('.delete-blog')
+        .contains('remove')
+        .click()
+
+      cy.get('.success.notification')
+        .contains('Blog Test Blog was deleted by Test User')
+        .should('have.css', 'color', 'rgb(0, 128, 0)')
+        .and('have.css', 'border-style', 'solid')
+
+      // after
+      cy.get('@blogs')
+        .should('not.exist')
     })
   })
 })
