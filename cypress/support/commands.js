@@ -28,6 +28,6 @@ Cypress.Commands.add('login', ({ username, password }) => {
     username, password
   }).then(({ body }) => {
     localStorage.setItem('user', JSON.stringify(body))
-    cy.visit('')
+    cy.visit('/')
   })
 })

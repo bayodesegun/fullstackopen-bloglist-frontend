@@ -3,20 +3,22 @@ import PropTypes from 'prop-types'
 
 const BlogList = ({ blogs, user, handleLogout, updateBlog, deleteBlog }) => (
   <div>
-    <h2>blogs</h2>
-    <h3>
+    <h2 className='page-header'>blogs</h2>
+    <h3 className='logged-in-user'>
       {user.name} is logged in. &nbsp;
       <button onClick={handleLogout}>logout</button>
     </h3>
-    {blogs.map(blog =>
-      <Blog
-        key={blog.id}
-        blog={blog}
-        loggedInUser={user}
-        updateBlog={updateBlog}
-        deleteBlog={deleteBlog}
-      />
-    )}
+    <div className='blog-list'>
+      {blogs.map(blog =>
+        <Blog
+          key={blog.id}
+          blog={blog}
+          loggedInUser={user}
+          updateBlog={updateBlog}
+          deleteBlog={deleteBlog}
+        />
+      )}
+    </div>
   </div>
 )
 
