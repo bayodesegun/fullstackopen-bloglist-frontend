@@ -221,5 +221,78 @@ describe('Blog app', function() {
       cy.get('@blogs')
         .should('not.exist')
     })
+
+    it('The delete button only appears if the user owns the blog', function() {
+      // ...before
+      // can see the delete button
+      cy.get('.blog-list')
+        .children('.blog').as('blogs')
+        .should('have.length', 1)
+
+      cy.get('@blogs')
+        .first()
+        .get('.blog-overview')
+        .get('button')
+        .contains('view')
+        .click()
+
+      cy.get('.blog-details')
+        .get('.delete-blog')
+        .contains('remove')
+
+      // ...after
+      // Now log in as another user
+      cy.contains('logout')
+        .click()
+
+      cy.get('.success.notification')
+        .contains('You logged out')
+        .should('have.css', 'color', 'rgb(0, 128, 0)')
+        .and('have.css', 'border-style', 'solid')
+
+      const user = {
+        name: 'Another User',
+        username: 'anotheruser',
+        password: 'test123'
+      }
+      cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+      cy.login({ username: 'anotheruser', password: 'test123' })
+
+      cy.get('@blogs')
+        .first()
+        .get('.blog-overview')
+        .get('button')
+        .contains('view')
+        .click()
+
+      cy.get('.blog-details')
+        .get('.delete-blog')
+        .should('not.exist')
+
+      // Create another blog, should have the delete button
+      cy.createBlog({
+        title: 'Test another blog',
+        author: 'Some User',
+        url: 'http://new.blog',
+        likes: 10
+      })
+
+      cy.get('@blogs')
+        .should('have.length', 2)
+
+      cy.get('@blogs')
+        .first()
+        .get('.blog-overview')
+        .get('button')
+        .contains('view')
+        .click()
+
+      cy.get('.blog-details').as('blogDetails')
+        .contains('Test another blog Some User')
+
+      cy.get('@blogDetails')
+        .get('.delete-blog')
+        .contains('remove')
+    })
   })
 })
