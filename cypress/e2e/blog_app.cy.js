@@ -294,5 +294,31 @@ describe('Blog app', function() {
         .get('.delete-blog')
         .contains('remove')
     })
+
+    it('Blogs are listed by likes descending', function() {
+      // The default blog
+      cy.get('.blog-list')
+        .children('.blog').as('blogs')
+        .should('have.length', 1)
+
+      // Create more blogs and check again
+      cy.createBlog({ title: 'Blog 2', author: 'Author 2', url: 'http://author2.blog', likes: 30 })
+      cy.createBlog({ title: 'Blog 3', author: 'Author 3', url: 'http://author3.blog', likes: 10 })
+
+      cy.get('@blogs')
+        .should('have.length', 3)
+
+      cy.get('@blogs')
+        .eq(0)
+        .contains('Blog 2 Author 2')
+
+      cy.get('@blogs')
+        .eq(1)
+        .contains('Blog 3 Author 3')
+
+      cy.get('@blogs')
+        .eq(2)
+        .contains('Test Blog Test Author')
+    })
   })
 })
